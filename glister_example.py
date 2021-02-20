@@ -79,7 +79,7 @@ def optimizer_with_scheduler(optim_type, model, num_epochs, learning_rate, m=0.9
         optimizer = optim.SGD(model.parameters(), lr=learning_rate,
                             momentum=m, weight_decay=wd)
     elif optim_type == "Adam":
-        optimizer = optim.Adam(model.parameter(), lr=learning_rate)
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     elif optim_type == "RMSProp":
         optimizer = optim.RMSprop(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs)
