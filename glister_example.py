@@ -23,7 +23,7 @@ from cords.utils.models import ResNet18, MnistNet, ResNet164
 from cords.utils.custom_dataset import load_dataset_custom
 from torch.utils.data import Subset
 from math import floor
-from hyperopt import hp, tpe, fmin, Trials, STATUS_FAIL
+from hyperopt import hp, tpe, fmin, Trials, STATUS_FAIL, STATUS_OK
 
 import pickle
 
@@ -384,7 +384,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
     omp_tst_acc = list(filter(tst_acc))
     print("Total time taken by " + strategy + " = " + str(omp_cum_timing[-1]))
     logfile.close()
-    return {'loss': -tst_acc.max()}
+    return {'loss': -tst_acc.max(), 'status':STATUS_OK}
 
 def main():
 
