@@ -35,7 +35,7 @@ space = {'lr': hp.uniform('lr', 0.01, 0.0007),
 datadir = '../../data'
 data_name = 'cifar10'
 fraction = float(0.1)
-num_epochs = int(1)
+num_epochs = int(100)
 select_every = int(20)
 feature = 'dss'
 num_runs = 1  # number of random runs
@@ -392,7 +392,7 @@ def main():
         try:
             print(num_epochs, data_name, model_name)
             tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device,
-                'GradMatch-Explore')
+                'GradMatch')
             print("ac", tst_acc)
             return tst_acc
         except Exception as err:
