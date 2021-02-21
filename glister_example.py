@@ -390,22 +390,19 @@ def main():
 
     def optimize(config):
         try:
-            print(num_epochs, data_name, model_name)
+            print("Hyperparameters: ", config)
             tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device,
                 'GradMatch')
-            print("ac", tst_acc)
             return tst_acc
         except Exception as err:
-            print("Error occurred")
-            err_str = str(err)
-            print(err_str)
+            print("Error occurred: ", str(err))
             rtn = {'status': STATUS_FAIL}
             return rtn
 
 
     """#Training Arguments"""
    
-    max_evals = nb_evals = 1
+    max_evals = nb_evals = 5
     
     try:
         trials = pickle.load(open("results.pkl", "rb"))
@@ -416,7 +413,7 @@ def main():
     except:
         trials = Trials()
         print("Starting from scratch: new trials.")
-
+    start_time = time.time()
     best = fmin(
         optimize,
         space,
@@ -424,7 +421,9 @@ def main():
         trials=trials,
         max_evals=max_evals
     )
+    print("Best parameters: ", best)
     pickle.dump(trials, open("results.pkl", "wb"))
+    print("Total time taken by hyperparameter optimization: ", time.time() - start_time)
 
 if __name__ == "__main__":
     main()
