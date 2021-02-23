@@ -30,7 +30,8 @@ import pickle
 
 #global space var
 space = {'lr': hp.uniform('lr', 0.01, 0.0007), 
-        'optimizer': hp.choice('optimizer', ['Adam', 'RMSProp', 'SGD'])
+        'optimizer': hp.choice('optimizer', ['Adam', 'SGD']),
+        'trn_batch_size': hp.choice('trn_batch_size', [20, 32, 64])
         }
 datadir = '../../data'
 data_name = 'cifar10'
@@ -113,12 +114,11 @@ def filter(y):
 
 
 def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction, select_every, optim_type, learning_rate, run,
-                device, log_dir, strategy):
+                device, log_dir, trn_batch_size, strategy):
 
     # Loading the Dataset
     trainset, validset, testset, num_cls = load_dataset_custom(datadir, dataset_name, feature)
     N = len(trainset)
-    trn_batch_size = 20
     val_batch_size = 1000
     tst_batch_size = 1000
 
@@ -413,7 +413,7 @@ def main():
         try:
             print("*****************************************\n\n")
             print("Hyperparameters: ", config, file=main_logfile)
-            tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device, log_dir,
+            tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device, log_dir, config['trn_batch_size'],
                 'GradMatch')
             return tst_acc
         except Exception as err:
