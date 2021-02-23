@@ -24,7 +24,7 @@ from cords.utils.custom_dataset import load_dataset_custom
 from torch.utils.data import Subset
 from math import floor
 from hyperopt import hp, tpe, fmin, Trials, STATUS_FAIL, STATUS_OK
-
+import uuid
 import pickle
 
 
@@ -42,6 +42,7 @@ num_runs = 1  # number of random runs
 learning_rate = 0.01
 model_name = 'ResNet18'
 device = "cuda" if torch.cuda.is_available() else "cpu"
+strategy = 'GradMatch'
 
 def model_eval_loss(data_loader, model, criterion):
     total_loss = 0
@@ -112,10 +113,9 @@ def filter(y):
 
 
 def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction, select_every, optim_type, learning_rate, run,
-                device, strategy):
+                device, log_dir, strategy):
 
     # Loading the Dataset
-    print("training model")
     trainset, validset, testset, num_cls = load_dataset_custom(datadir, dataset_name, feature)
     N = len(trainset)
     trn_batch_size = 20
@@ -154,11 +154,13 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
 
     # Results logging file
     print_every = 3
-    all_logs_dir = 'results/' + strategy + '/' + dataset_name + '/warmstart/' + str(
-        fraction) + '/' + str(select_every) + '/' + str(run)
+    
+    all_logs_dir = log_dir + '/' + str(uuid.uuid4())
+    while os.path.exists(all_logs_dir):
+        all_logs_dir = log_dir +  '/' + str(uuid.uuid4())
     print(all_logs_dir)
     subprocess.run(["mkdir", "-p", all_logs_dir])
-    path_logfile = os.path.join(all_logs_dir, dataset_name + '.txt')
+    path_logfile = os.path.join(all_logs_dir, 'log.txt')
     logfile = open(path_logfile, 'w')
     exp_name = dataset_name + '_fraction:' + str(fraction) + '_epochs:' + str(num_epochs) + \
                '_selEvery:' + str(select_every) + '_variant' + '_runs' + str(run)
@@ -198,6 +200,14 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                                           False, lam=0, eps=1e-100)
         # Random-Online Selection strategy
         rand_setf_model = RandomStrategy(trainloader, online=True)
+
+    elif strategy == 'Random':
+        # Random Selection strategy
+        setf_model = RandomStrategy(trainloader, online=False)
+
+    elif strategy == 'Random-Online':
+        # Random-Online Selection strategy
+        setf_model = RandomStrategy(trainloader, online=True)
 
     print("=======================================", file=logfile)
     kappa_epochs = int(0.5 * num_epochs)
@@ -318,6 +328,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                 subtrn_total += targets.size(0)
                 subtrn_correct += predicted.eq(targets).sum().item()
             train_time = time.time() - start_time
+        
         scheduler.step()
         timing[i] = train_time + subset_selection_time
         # print("Epoch timing is: " + str(timing[i]))
@@ -356,7 +367,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         subtrn_acc[i] = subtrn_correct / subtrn_total
         substrn_losses[i] = subtrn_loss
         val_losses[i] = val_loss
-        print('Epoch:', i + 1, 'Validation Accuracy: ', val_acc[i], 'Test Accuracy: ', tst_acc[i], 'Time: ', timing[i])
+        print('Epoch:', i + 1, 'Validation Accuracy: ', val_acc[i], 'Test Accuracy: ', tst_acc[i], 'Train Accuracy:', subtrn_acc[i], 'Time: ', timing[i])
     print(strategy + " Selection Run---------------------------------")
     print("Final SubsetTrn:", subtrn_loss)
     print("Validation Loss and Accuracy:", val_loss, val_acc.max())
@@ -368,15 +379,18 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
     print('---------------------------------------------------------------------', file=logfile)
     val = "Validation Accuracy, "
     tst = "Test Accuracy, "
+    trn = "Train Accuracy, "
     time_str = "Time, "
 
     for i in range(num_epochs):
         time_str = time_str + "," + str(timing[i])
         val = val + "," + str(val_acc[i])
+        trn = trn + "," + str(subtrn_acc[i])
         tst = tst + "," + str(tst_acc[i])
 
     print(timing, file=logfile)
     print(val, file=logfile)
+    print(trn, file=logfile)
     print(tst, file=logfile)
 
     omp_timing = np.array(timing)
@@ -384,16 +398,22 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
     omp_tst_acc = list(filter(tst_acc))
     print("Total time taken by " + strategy + " = " + str(omp_cum_timing[-1]))
     logfile.close()
-    return {'loss': -tst_acc.max(), 'status':STATUS_OK}
+    return {'loss': -tst_acc.max(), 'max_val_acc':val_acc.max() , 'train_acc': subtrn_acc.max(), 'status':STATUS_OK}
 
 def main():
+    now = datetime.datetime.now()
+    dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
+    log_dir = '/content/drive/MyDrive/CordsResults/' + strategy + '/' + data_name + '/warmstart/' + str(
+        fraction) + '/' + dt_string
+    subprocess.run(["mkdir", "-p", log_dir])
+    path_logfile = os.path.join(log_dir, data_name + '.txt')
+    main_logfile = open(path_logfile, 'w')
 
     def optimize(config):
         try:
             print("*****************************************\n\n")
-            print("Starting new training with following set of hyperparameters.")
-            print("Hyperparameters: ", config)
-            tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device,
+            print("Hyperparameters: ", config, file=main_logfile)
+            tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device, log_dir,
                 'GradMatch')
             return tst_acc
         except Exception as err:
@@ -424,11 +444,17 @@ def main():
         max_evals=max_evals
     )
     print("Best parameters: ", best)
+    print("Best parameters: ", best, file=main_logfile)
     pickle.dump(trials, open("results.pkl", "wb"))
     print("Total time taken by hyperparameter optimization: ", time.time() - start_time)
-    print("Model name: ", model_name)
-    print("Fraction: ", fraction)
-    print("Number of epochs: ", num_epochs)
+    print("Total time taken by hyperparameter optimization: ", time.time() - start_time, file=main_logfile)
+    print("Model name: ", model_name, file=main_logfile)
+    print("Dataset: ", data_name, file=main_logfile)
+    print("Fraction: ", fraction, file=main_logfile)
+    print("Number of epochs: ", num_epochs, file=main_logfile)
+    print("\n\n Trials : ", file=main_logfile)
+    for trial in trials:
+        print(trial, file=main_logfile)
 
 if __name__ == "__main__":
     main()
