@@ -452,6 +452,7 @@ def main():
     print("Dataset: ", data_name, file=main_logfile)
     print("Fraction: ", fraction, file=main_logfile)
     print("Number of epochs: ", num_epochs, file=main_logfile)
+    print("Max Evals: ", max_evals, file=main_logfile)
     print("\n\n Trials : ", file=main_logfile)
     for trial in trials:
         print(trial, file=main_logfile)
