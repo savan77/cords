@@ -426,6 +426,9 @@ def main():
     print("Best parameters: ", best)
     pickle.dump(trials, open("results.pkl", "wb"))
     print("Total time taken by hyperparameter optimization: ", time.time() - start_time)
+    print("Model name: ", model_name)
+    print("Fraction: ", fraction)
+    print("Number of epochs: ", num_epochs)
 
 if __name__ == "__main__":
     main()
