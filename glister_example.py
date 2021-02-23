@@ -390,6 +390,8 @@ def main():
 
     def optimize(config):
         try:
+            print("*****************************************\n\n")
+            print("Starting new training with following set of hyperparameters.")
             print("Hyperparameters: ", config)
             tst_acc = train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, config['optimizer'], config['lr'], 1, device,
                 'GradMatch')
