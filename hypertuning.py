@@ -36,7 +36,7 @@ from ray import tune
 from ray.tune.suggest import ConcurrencyLimiter
 from ray.tune.schedulers import AsyncHyperBandScheduler
 from ray.tune.suggest.hyperopt import HyperOptSearch
-space = {'lr': hp.uniform('lr', 0.01, 0.0007), 
+space = {'lr': hp.uniform('lr', 0.001, 0.01), 
         'optimizer': hp.choice('optimizer', ['Adam', 'SGD']),
         'trn_batch_size': hp.choice('trn_batch_size', [20, 32, 64])
         }
