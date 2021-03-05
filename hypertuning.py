@@ -183,6 +183,40 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         setf_model = OMPGradMatchStrategy(trainloader, valloader, model1, criterion,
                                           learning_rate, device, num_cls, True, 'PerBatch',
                                           False, lam=0, eps=1e-100)
+    elif strategy == 'GLISTER':
+        # GLISTER Selection strategy
+        setf_model = GLISTERStrategy(trainloader, valloader, model1, criterion,
+                                     learning_rate, device, num_cls, False, 'Stochastic', r=int(bud))
+    elif strategy == 'CRAIG':
+            # CRAIG Selection strategy
+        setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
+                                   device, num_cls, False, False, 'PerClass')
+    
+    elif strategy == 'CRAIGPB':
+        # CRAIG Selection strategy
+        setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
+                                   device, num_cls, False, False, 'PerBatch')
+    
+    elif strategy == 'CRAIG-Explore':
+        # CRAIG Selection strategy
+        setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
+                                   device, num_cls, False, False, 'PerClass')
+        # Random-Online Selection strategy
+        rand_setf_model = RandomStrategy(trainloader, online=True)
+
+    elif strategy == 'CRAIGPB-Explore':
+        # CRAIG Selection strategy
+        setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
+                                   device, num_cls, False, False, 'PerBatch')
+        # Random-Online Selection strategy
+        rand_setf_model = RandomStrategy(trainloader, online=True)
+    
+    elif strategy == 'GLISTER-Explore':
+        # GLISTER Selection strategy
+        setf_model = GLISTERStrategy(trainloader, valloader, model1, criterion,
+                                     learning_rate, device, num_cls, False, 'Stochastic', r=int(bud))
+        # Random-Online Selection strategy
+        rand_setf_model = RandomStrategy(trainloader, online=True)
 
     elif strategy == 'GradMatch-Explore':
         # OMPGradMatch Selection strategy
@@ -217,8 +251,17 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         subtrn_total = 0
         subset_selection_time = 0
 
+        if strategy in ['Random-Online']:
+            start_time = time.time()
+            subset_idxs, gammas = setf_model.select(int(bud))
+            idxs = subset_idxs
+            subset_selection_time += (time.time() - start_time)
+            gammas = gammas.to(device)
+        
+        elif strategy in ['Random']:
+            pass
 
-        if (strategy in ['GLISTER', 'GradMatch', 'GradMatchPB', 'CRAIG', 'CRAIGPB']) and (
+        elif (strategy in ['GLISTER', 'GradMatch', 'GradMatchPB', 'CRAIG', 'CRAIGPB']) and (
                 ((i + 1) % select_every) == 0):
             start_time = time.time()
             cached_state_dict = copy.deepcopy(model.state_dict())
@@ -310,6 +353,51 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                     subtrn_correct += predicted.eq(targets).sum().item()
             train_time = time.time() - start_time
 
+        elif strategy in ['GLISTER', 'Random', 'Random-Online']:
+            start_time = time.time()
+            for batch_idx, (inputs, targets) in enumerate(subset_trnloader):
+                inputs, targets = inputs.to(device), targets.to(device,
+                                                                non_blocking=True)  # targets can have non_blocking=True.
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                loss = criterion(outputs, targets)
+                loss.backward()
+                subtrn_loss += loss.item()
+                optimizer.step()
+                _, predicted = outputs.max(1)
+                subtrn_total += targets.size(0)
+                subtrn_correct += predicted.eq(targets).sum().item()
+            train_time = time.time() - start_time
+
+        elif strategy in ['GLISTER-Explore']:
+            start_time = time.time()
+            if i < full_epochs:
+                for batch_idx, (inputs, targets) in enumerate(trainloader):
+                    inputs, targets = inputs.to(device), targets.to(device,
+                                                                    non_blocking=True)  # targets can have non_blocking=True.
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+                    loss = criterion(outputs, targets)
+                    loss.backward()
+                    subtrn_loss += loss.item()
+                    optimizer.step()
+                    _, predicted = outputs.max(1)
+                    subtrn_total += targets.size(0)
+                    subtrn_correct += predicted.eq(targets).sum().item()
+            elif i >= kappa_epochs:
+                for batch_idx, (inputs, targets) in enumerate(subset_trnloader):
+                    inputs, targets = inputs.to(device), targets.to(device,
+                                                                    non_blocking=True)  # targets can have non_blocking=True.
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+                    loss = criterion(outputs, targets)
+                    loss.backward()
+                    subtrn_loss += loss.item()
+                    optimizer.step()
+                    _, predicted = outputs.max(1)
+                    subtrn_total += targets.size(0)
+                    subtrn_correct += predicted.eq(targets).sum().item()
+            train_time = time.time() - start_time
 
         elif strategy in ['Full']:
             start_time = time.time()
