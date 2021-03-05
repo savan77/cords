@@ -46,7 +46,7 @@ hyperopt_search = HyperOptSearch(space, metric="mean_accuracy", mode="max")
 datadir = '../../data'
 data_name = 'cifar10'
 fraction = float(0.1)
-num_epochs = int(70)
+num_epochs = int(300)
 select_every = int(20)
 feature = 'dss'
 num_runs = 1  # number of random runs
@@ -57,7 +57,7 @@ strategy = 'GradMatchPB'
 
 def main(config):
   train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, 'SGD', config['lr'], 1, device, config['trn_batch_size'],
-                'GradMatchPB')
+                strategy)
 
 
 def model_eval_loss(data_loader, model, criterion):
@@ -478,6 +478,6 @@ analysis = tune.run(
     config=space,
     search_alg=hyperopt_search,
     resources_per_trial={'gpu':1},
-    local_dir="/content/drive/MyDrive/RayLogs/",
+    local_dir="/content/drive/MyDrive/RayLogs/"+strategy+"/",
     log_to_file=True)
 print("Best Config: ", analysis.best_config)
