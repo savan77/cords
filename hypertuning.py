@@ -54,6 +54,8 @@ learning_rate = 0.01
 model_name = 'ResNet18'
 device = "cuda" if torch.cuda.is_available() else "cpu"
 strategy = 'GradMatchPB'
+use_kappa = True
+kappa = 0.5
 
 def main(config):
   train_model(num_epochs, data_name, datadir, feature, model_name, fraction, select_every, 'SGD', config['lr'], 1, device, config['trn_batch_size'],
@@ -202,21 +204,36 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
                                    device, num_cls, False, False, 'PerClass')
         # Random-Online Selection strategy
-        rand_setf_model = RandomStrategy(trainloader, online=True)
+        # rand_setf_model = RandomStrategy(trainloader, online=True)
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
+        else:
+            raise KeyError("Specify a kappa value in the config file")
 
     elif strategy == 'CRAIGPB-Explore':
         # CRAIG Selection strategy
         setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
                                    device, num_cls, False, False, 'PerBatch')
         # Random-Online Selection strategy
-        rand_setf_model = RandomStrategy(trainloader, online=True)
+        # rand_setf_model = RandomStrategy(trainloader, online=True)
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
+        else:
+            raise KeyError("Specify a kappa value in the config file")
     
     elif strategy == 'GLISTER-Explore':
         # GLISTER Selection strategy
         setf_model = GLISTERStrategy(trainloader, valloader, model1, criterion,
                                      learning_rate, device, num_cls, False, 'Stochastic', r=int(bud))
         # Random-Online Selection strategy
-        rand_setf_model = RandomStrategy(trainloader, online=True)
+        # rand_setf_model = RandomStrategy(trainloader, online=True)
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
+        else:
+            raise KeyError("Specify a kappa value in the config file")
 
     elif strategy == 'GradMatch-Explore':
         # OMPGradMatch Selection strategy
@@ -224,7 +241,13 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                                           learning_rate, device, num_cls, True, 'PerClassPerGradient',
                                           False, lam=0.5, eps=1e-100)
         # Random-Online Selection strategy
-        rand_setf_model = RandomStrategy(trainloader, online=True)
+        # rand_setf_model = RandomStrategy(trainloader, online=True)
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
+        else:
+            raise KeyError("Specify a kappa value in the config file")
+
 
     elif strategy == 'GradMatchPB-Explore':
         # OMPGradMatch Selection strategy
@@ -232,7 +255,13 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                                           learning_rate, device, num_cls, True, 'PerBatch',
                                           False, lam=0, eps=1e-100)
         # Random-Online Selection strategy
-        rand_setf_model = RandomStrategy(trainloader, online=True)
+        # rand_setf_model = RandomStrategy(trainloader, online=True)
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
+        else:
+            raise KeyError("Specify a kappa value in the config file")
+
 
     elif strategy == 'Random':
         # Random Selection strategy
@@ -242,8 +271,8 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         # Random-Online Selection strategy
         setf_model = RandomStrategy(trainloader, online=True)
 
-    kappa_epochs = int(0.5 * num_epochs)
-    full_epochs = round(kappa_epochs * fraction)
+    # kappa_epochs = int(0.5 * num_epochs)
+    # full_epochs = round(kappa_epochs * fraction)
 
     for i in range(num_epochs):
         subtrn_loss = 0
@@ -279,11 +308,11 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         elif (strategy in ['GLISTER-Explore', 'GradMatch-Explore', 'GradMatchPB-Explore', 'CRAIG-Explore',
                            'CRAIGPB-Explore']):
             start_time = time.time()
-            if i < full_epochs:
-                subset_idxs, gammas = rand_setf_model.select(int(bud))
-                idxs = subset_idxs
-                gammas = gammas.to(device)
-            elif ((i % select_every == 0) and (i >= kappa_epochs)):
+            # if i < full_epochs:
+            #     subset_idxs, gammas = rand_setf_model.select(int(bud))
+            #     idxs = subset_idxs
+            #     gammas = gammas.to(device)
+            if ((i % select_every == 0) and (i >= kappa_epochs)):
                 cached_state_dict = copy.deepcopy(model.state_dict())
                 clone_dict = copy.deepcopy(model.state_dict())
                 if strategy in ['CRAIG-Explore', 'CRAIGPB-Explore']:
