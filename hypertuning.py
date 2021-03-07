@@ -243,7 +243,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         setf_model = RandomStrategy(trainloader, online=True)
 
     kappa_epochs = int(0.5 * num_epochs)
-    full_epochs = floor(kappa_epochs/int(fraction*100))
+    full_epochs = round(kappa_epochs * fraction)
 
     for i in range(num_epochs):
         subtrn_loss = 0
