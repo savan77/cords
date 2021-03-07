@@ -479,8 +479,10 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
 
         val_acc[i] = val_correct / val_total
         tst_acc[i] = tst_correct / tst_total
-        subtrn_acc[i] = subtrn_correct / subtrn_total
-        substrn_losses[i] = subtrn_loss
+        if subtrn_total != 0:
+            subtrn_acc[i] = subtrn_correct / subtrn_total
+        else:
+            subtrn_acc[i] = 0
         val_losses[i] = val_loss
         print('Epoch:', i + 1, 'Validation Accuracy: ', val_acc[i], 'Test Accuracy: ', tst_acc[i], 'Train Accuracy:', subtrn_acc[i], 'Time: ', timing[i])
         tune.report(mean_accuracy=val_acc[i])
