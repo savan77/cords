@@ -408,7 +408,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                 subtrn_correct += predicted.eq(targets).sum().item()
             train_time = time.time() - start_time
 
-        elif strategy in ['CRAIG-Warm']:
+        elif strategy in ['GLISTER-Warm']:
             start_time = time.time()
             if i < full_epochs:
                 for batch_idx, (inputs, targets) in enumerate(trainloader):
