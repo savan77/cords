@@ -199,7 +199,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
                                    device, num_cls, False, False, 'PerBatch')
     
-    elif strategy == 'CRAIG-Explore':
+    elif strategy == 'CRAIG-Warm':
         # CRAIG Selection strategy
         setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
                                    device, num_cls, False, False, 'PerClass')
@@ -211,7 +211,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         else:
             raise KeyError("Specify a kappa value in the config file")
 
-    elif strategy == 'CRAIGPB-Explore':
+    elif strategy == 'CRAIGPB-Warm':
         # CRAIG Selection strategy
         setf_model = CRAIGStrategy(trainloader, valloader, model1, criterion,
                                    device, num_cls, False, False, 'PerBatch')
@@ -223,7 +223,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         else:
             raise KeyError("Specify a kappa value in the config file")
     
-    elif strategy == 'GLISTER-Explore':
+    elif strategy == 'CRAIG-Warm':
         # GLISTER Selection strategy
         setf_model = GLISTERStrategy(trainloader, valloader, model1, criterion,
                                      learning_rate, device, num_cls, False, 'Stochastic', r=int(bud))
@@ -235,7 +235,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         else:
             raise KeyError("Specify a kappa value in the config file")
 
-    elif strategy == 'GradMatch-Explore':
+    elif strategy == 'GradMatch-Warm':
         # OMPGradMatch Selection strategy
         setf_model = OMPGradMatchStrategy(trainloader, valloader, model1, criterion,
                                           learning_rate, device, num_cls, True, 'PerClassPerGradient',
@@ -249,7 +249,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
             raise KeyError("Specify a kappa value in the config file")
 
 
-    elif strategy == 'GradMatchPB-Explore':
+    elif strategy == 'GradMatchPB-Warm':
         # OMPGradMatch Selection strategy
         setf_model = OMPGradMatchStrategy(trainloader, valloader, model1, criterion,
                                           learning_rate, device, num_cls, True, 'PerBatch',
@@ -305,8 +305,8 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                 gammas = torch.from_numpy(np.array(gammas)).to(device).to(torch.float32)
             subset_selection_time += (time.time() - start_time)
 
-        elif (strategy in ['GLISTER-Explore', 'GradMatch-Explore', 'GradMatchPB-Explore', 'CRAIG-Explore',
-                           'CRAIGPB-Explore']):
+        elif (strategy in ['CRAIG-Warm', 'GradMatch-Warm', 'GradMatchPB-Warm', 'CRAIG-Warm',
+                           'CRAIGPB-Warm']):
             start_time = time.time()
             # if i < full_epochs:
             #     subset_idxs, gammas = rand_setf_model.select(int(bud))
@@ -315,13 +315,13 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
             if ((i % select_every == 0) and (i >= kappa_epochs)):
                 cached_state_dict = copy.deepcopy(model.state_dict())
                 clone_dict = copy.deepcopy(model.state_dict())
-                if strategy in ['CRAIG-Explore', 'CRAIGPB-Explore']:
+                if strategy in ['CRAIG-Warm', 'CRAIGPB-Warm']:
                     subset_idxs, gammas = setf_model.select(int(bud), clone_dict, 'lazy')
                 else:
                     subset_idxs, gammas = setf_model.select(int(bud), clone_dict)
                 model.load_state_dict(cached_state_dict)
                 idxs = subset_idxs
-                if strategy in ['GradMatch-Explore', 'GradMatchPB-Explore', 'CRAIG-Explore', 'CRAIGPB-Explore']:
+                if strategy in ['GradMatch-Warm', 'GradMatchPB-Warm', 'CRAIG-Warm', 'CRAIGPB-Warm']:
                     gammas = torch.from_numpy(np.array(gammas)).to(device).to(torch.float32)
             subset_selection_time += (time.time() - start_time)
 
@@ -349,7 +349,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                 subtrn_correct += predicted.eq(targets).sum().item()
             train_time = time.time() - start_time
 
-        elif strategy in ['CRAIGPB-Explore', 'CRAIG-Explore', 'GradMatch-Explore', 'GradMatchPB-Explore']:
+        elif strategy in ['CRAIGPB-Warm', 'CRAIG-Warm', 'GradMatch-Warm', 'GradMatchPB-Warm']:
             start_time = time.time()
             if i < full_epochs:
                 for batch_idx, (inputs, targets) in enumerate(trainloader):
@@ -398,7 +398,7 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
                 subtrn_correct += predicted.eq(targets).sum().item()
             train_time = time.time() - start_time
 
-        elif strategy in ['GLISTER-Explore']:
+        elif strategy in ['CRAIG-Warm']:
             start_time = time.time()
             if i < full_epochs:
                 for batch_idx, (inputs, targets) in enumerate(trainloader):
