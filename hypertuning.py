@@ -510,4 +510,4 @@ analysis = tune.run(
     resources_per_trial={'gpu':1},
     local_dir="/content/drive/MyDrive/RayLogs/"+strategy+"/",
     log_to_file=True)
-print("Best Config: ", analysis.best_config)
+print("Best Config: ", analysis.get_best_config(metric="mean_accuracy", mode="max"))
