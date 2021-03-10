@@ -275,9 +275,9 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
         setf_model = GLISTERStrategy(trainloader, valloader, model1, criterion, learning_rate, device, num_cls, False, 'Stochastic', r=int(bud))
         # Random-Online Selection strategy
         #rand_setf_model = RandomStrategy(trainloader, online=True)
-        if 'kappa' in self.configdata['dss_strategy']:
-            kappa_epochs = int(self.configdata['dss_strategy']['kappa'] * self.configdata['train_args']['num_epochs'])
-            full_epochs = round(kappa_epochs * self.configdata['dss_strategy']['fraction'])
+        if use_kappa:
+            kappa_epochs = int(kappa * num_epochs)
+            full_epochs = round(kappa_epochs * fraction)
         else:
             raise KeyError("Specify a kappa value in the config file")
 
