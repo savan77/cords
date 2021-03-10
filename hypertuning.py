@@ -505,7 +505,6 @@ def train_model(num_epochs, dataset_name, datadir, feature, model_name, fraction
 analysis = tune.run(
     main,
     num_samples=20,
-    scheduler=ASHAScheduler(metric="mean_accuracy", mode="max"),
     config=space,
     search_alg=hyperopt_search,
     resources_per_trial={'gpu':1},
