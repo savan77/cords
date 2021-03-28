@@ -62,6 +62,8 @@ class HyperParamTuning:
             config['optimizer']['type'] = new_config['optimizer']
         if 'trn_batch_size' in new_config:
             config['dataloader']['batch_size'] = new_config['trn_batch_size']
+        if 'num_epochs' in new_config:
+            config['train_args']['num_epochs'] = new_config['num_epochs']
         
         return config
         
