@@ -28,13 +28,14 @@ scheduler = dict(type = "cosine_annealing",
 dss_strategy = dict(type = "GradMatchPB-Warm",
                     fraction = 0.1,
                     select_every = 20,
-                    kappa = 0.5),
+                    kappa = 0.5,
+                    lam=0),
 
 train_args = dict(num_epochs=300,
                   device="cuda",
                   print_every = 1,
                   results_dir = 'results/',
-                  print_args = ["val_acc"],
+                  print_args = ["val_acc", "val_loss"],
                   return_args = []
                   )
 )
