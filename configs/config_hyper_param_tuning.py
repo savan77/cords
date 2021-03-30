@@ -12,7 +12,7 @@ subset_config = "configs/config_gradmatchpb-warm_cifar100.py",
 space = dict(learning_rate=hp.uniform('lr', 0.001, 0.01), 
         optimizer= hp.choice('optimizer', ['sgd', 'adam']),
         trn_batch_size= hp.choice('trn_batch_size', [20, 32, 64]),
-        num_epochs=hp.uniform('num_epochs', 120, 300))
+        num_epochs=hp.uniform('num_epochs', 120, 300)),
 
 # tuning algorithm 
 search_algo = "TPE",
