@@ -29,7 +29,7 @@ class HyperParamTuning:
             config=self.config_data['space'],
             search_alg=self.search_algo,
             resources_per_trial={'gpu':1},
-            local_dir=self.config_data['log_dir']+self.subset_method+'/',
+            local_dir=self.config_data['log_dir']+self.subset_method+'/'+self.train_class.configdata['dataset']['name']+'/',
             log_to_file=True,
             name=self.config_data['name'],
             resume=self.config_data['resume'])
@@ -64,7 +64,15 @@ class HyperParamTuning:
             config['dataloader']['batch_size'] = new_config['trn_batch_size']
         if 'num_epochs' in new_config:
             config['train_args']['num_epochs'] = int(new_config['num_epochs'])
-        
+        if 'resnet50_1' in new_config:
+            config['model']['layers_1'] = int(new_config['resnet50_1'])
+        if 'resnet50_2' in new_config:
+            config['model']['layers_2'] = int(new_config['resnet50_2'])
+        if 'resnet50_3' in new_config:
+            config['model']['layers_3'] = int(new_config['resnet50_3'])
+        if 'resnet50_4' in new_config:
+            config['model']['layers_4'] = int(new_config['resnet50_4'])
+
         return config
         
 

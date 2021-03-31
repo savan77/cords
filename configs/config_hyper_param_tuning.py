@@ -12,7 +12,12 @@ subset_config = "configs/config_gradmatchpb-warm_cifar100.py",
 space = dict(learning_rate=hp.uniform('lr', 0.001, 0.01), 
         optimizer= hp.choice('optimizer', ['sgd', 'adam']),
         trn_batch_size= hp.choice('trn_batch_size', [20, 32, 64]),
-        num_epochs=hp.uniform('num_epochs', 120, 300)),
+        num_epochs=hp.uniform('num_epochs', 120, 300),
+        resnet50_1=hp.choice('resnet50_1', [2,3,4]),
+        resnet50_2=hp.choice('resnet50_2', [3,4,5]),
+        resnet50_3=hp.choice('resnet50_3', [5,6,7]),
+        resnet50_4=hp.choice('resnet50_4', [2,3,4]))
+
 
 # tuning algorithm 
 search_algo = "TPE",

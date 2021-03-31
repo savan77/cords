@@ -49,6 +49,8 @@ class TrainClassifier:
             model = MnistNet()
         elif self.configdata['model']['architecture'] == 'ResNet164':
             model = ResNet164(self.configdata['model']['numclasses'])
+        elif self.configdata['model']['architecture'] == 'ResNet50':
+            model = ResNet50(self.configdata['model']['numclasses'], [self.configdata['model']['layers_1'],self.configdata['model']['layers_2'],self.configdata['model']['layers_3'],self.configdata['model']['layers_4']])
         elif self.configdata['model']['architecture'] == 'MobileNet':
             model = MobileNet(self.configdata['model']['numclasses'])
         elif self.configdata['model']['architecture'] == 'MobileNetV2':
