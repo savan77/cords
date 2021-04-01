@@ -16,7 +16,7 @@ space = dict(learning_rate=hp.uniform('lr', 0.001, 0.01),
         resnet50_1=hp.choice('resnet50_1', [2,3,4]),
         resnet50_2=hp.choice('resnet50_2', [3,4,5]),
         resnet50_3=hp.choice('resnet50_3', [5,6,7]),
-        resnet50_4=hp.choice('resnet50_4', [2,3,4]))
+        resnet50_4=hp.choice('resnet50_4', [2,3,4])),
 
 
 # tuning algorithm 
