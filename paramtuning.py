@@ -51,7 +51,8 @@ class HyperParamTuning:
         new_config = self.update_parameters(self.train_class.configdata, best_params)
         self.train_class.configdata = new_config
         self.train_class.configdata['dss_strategy']['type'] = 'Full'
-
+        # print test stats
+        self.train_class.configdata['train_args']['print_args'].extend(['tst_loss', 'tst_acc'])
         self.train_class.train()
     
     def update_parameters(self, config, new_config):
