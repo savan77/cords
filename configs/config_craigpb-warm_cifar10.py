@@ -10,7 +10,7 @@ config = dict(setting="supervisedlearning",
                               batch_size=20,
                               pin_memory=True),
 
-              model=dict(architecture='ResNet18',
+              model=dict(architecture='ResNet50',
                          type='pre-defined',
                          numclasses=100),
 

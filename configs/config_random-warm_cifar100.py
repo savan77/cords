@@ -1,7 +1,7 @@
 # Learning setting
 config = dict(setting="supervisedlearning",
 
-              dataset=dict(name="cifar100",
+              dataset=dict(name="cifar10",
                            datadir="../data",
                            feature="dss",
                            type="pre-defined"),
@@ -10,9 +10,9 @@ config = dict(setting="supervisedlearning",
                               batch_size=20,
                               pin_memory=True),
 
-              model=dict(architecture='ResNet50',
+              model=dict(architecture='ResNet18',
                          type='pre-defined',
-                         numclasses=100),
+                         numclasses=10),
 
               loss=dict(type='CrossEntropyLoss',
                         use_sigmoid=False),
@@ -25,15 +25,16 @@ config = dict(setting="supervisedlearning",
               scheduler=dict(type="cosine_annealing",
                              T_max=300),
 
-              dss_strategy=dict(type="Random-Online",
+              dss_strategy=dict(type="Random-Warm",
                                 fraction=0.1,
-                                select_every=20),
+                                select_every=20,
+                                kappa=0.5),
 
               train_args=dict(num_epochs=300,
                               device="cuda",
-                              print_every=1,
+                              print_every=10,
                               results_dir='results/',
-                              print_args=["val_loss", "val_acc"],
+                              print_args=["val_loss", "val_acc", "tst_loss", "tst_acc", "time"],
                               return_args=[]
                               )
               )
