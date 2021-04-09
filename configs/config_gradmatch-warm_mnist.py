@@ -7,7 +7,7 @@ config = dict(setting="supervisedlearning",
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
-                              batch_size=20,
+                              batch_size=256,
                               pin_memory=True),
 
               model = dict(architecture='MnistNet',
