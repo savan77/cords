@@ -7,7 +7,7 @@ dataset = dict(name="mnist",
                type= "pre-defined"),
 
 dataloader = dict(shuffle=True,
-                  batch_size=20,
+                  batch_size=256,
                   pin_memory = True),
 
 model = dict(architecture='MnistNet',
@@ -33,7 +33,7 @@ dss_strategy = dict(type = "GradMatchPB-Warm",
                     kappa = 0.5,
                     lam=0),
 
-train_args = dict(num_epochs=20,
+train_args = dict(num_epochs=15,
                   device="cuda",
                   print_every = 1,
                   results_dir = 'results/',

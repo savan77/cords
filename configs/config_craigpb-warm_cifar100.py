@@ -1,7 +1,7 @@
 # Learning setting
 config = dict(setting="supervisedlearning",
 
-              dataset=dict(name="mnist",
+              dataset=dict(name="cifar100",
                            datadir="../data",
                            feature="dss",
                            type="pre-defined"),

@@ -314,7 +314,7 @@ class TrainClassifier:
 
             #print("selEpoch: %d, Selection Ended at:" % (i), str(datetime.datetime.now()))
             data_sub = Subset(trainset, idxs)
-            subset_trnloader = torch.utils.data.DataLoader(data_sub, batch_size=trn_batch_size, shuffle=False,
+            subset_trnloader = torch.utils.data.DataLoader(data_sub, batch_size=self.configdata['dataloader']['batch_size'], shuffle=False,
                                                            pin_memory=True)
 
             model.train()

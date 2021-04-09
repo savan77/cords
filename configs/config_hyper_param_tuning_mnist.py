@@ -9,10 +9,10 @@ subset_config = "configs/config_gradmatchpb-warm_mnist.py",
 # parameters for hyper-parameter tuning
 
 # search space for hyper-parameter tuning
-space = dict(learning_rate=hp.uniform('lr', 0.001, 0.01), 
+space = dict(learning_rate=hp.uniform('lr', 0.0005, 0.01), 
         optimizer= hp.choice('optimizer', ['sgd', 'adam']),
-        trn_batch_size= hp.choice('trn_batch_size', [20, 32, 64]),
-        num_epochs=hp.uniform('num_epochs', 10, 50),
+        trn_batch_size= hp.choice('trn_batch_size', [64, 128, 256]),
+        num_epochs=hp.uniform('num_epochs', 5, 15),
         kernel1=hp.choice('kernel1', [1,3,5,7]),
         kernel2=hp.choice('kernel2', [1,3,5,7])),
 

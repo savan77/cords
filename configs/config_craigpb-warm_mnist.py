@@ -1,13 +1,13 @@
 # Learning setting
 config = dict(setting="supervisedlearning",
 
-              dataset=dict(name="cifar100",
+              dataset=dict(name="mnist",
                            datadir="../data",
                            feature="dss",
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
-                              batch_size=20,
+                              batch_size=256,
                               pin_memory=True),
 
               model = dict(architecture='MnistNet',
@@ -32,7 +32,7 @@ config = dict(setting="supervisedlearning",
                                 select_every=20,
                                 kappa=0.5),
 
-              train_args=dict(num_epochs=20,
+              train_args=dict(num_epochs=15,
                               device="cuda",
                               print_every=1,
                               results_dir='results/',

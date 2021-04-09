@@ -7,7 +7,7 @@ config = dict(setting="supervisedlearning",
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
-                              batch_size=20,
+                              batch_size=256,
                               pin_memory=True),
 
               model = dict(architecture='MnistNet',
@@ -31,7 +31,7 @@ config = dict(setting="supervisedlearning",
                                 fraction=0.1,
                                 select_every=20),
 
-              train_args=dict(num_epochs=300,
+              train_args=dict(num_epochs=15,
                               device="cuda",
                               print_every=1,
                               results_dir='results/',
