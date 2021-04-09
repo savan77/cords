@@ -4,7 +4,7 @@ config = dict(setting= "hyperparamtuning",
 
 # parameter for subset selection
 # all settings for subset selection will be fetched from here
-subset_config = "configs/config_gradmatchpb-warm_mnist.py",
+subset_config = "configs/config_gradmatchpb-warm_cifar100.py",
 
 # parameters for hyper-parameter tuning
 
