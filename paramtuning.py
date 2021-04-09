@@ -29,7 +29,7 @@ class HyperParamTuning:
             config=self.config_data['space'],
             search_alg=self.search_algo,
             resources_per_trial={'gpu':1},
-            local_dir=self.config_data['log_dir']+self.subset_method+'/'+self.train_class.configdata['dataset']['name']+'/',
+            local_dir=self.config_data['log_dir']+self.subset_method+'/'+self.train_class.configdata['dataset']['name']+'/'+self.train_class.configdata['model']['architecture']+'/',
             log_to_file=True,
             name=self.config_data['name'],
             resume=self.config_data['resume'])
