@@ -4,7 +4,7 @@ config = dict(setting= "hyperparamtuning",
 
 # parameter for subset selection
 # all settings for subset selection will be fetched from here
-subset_config = "configs/config_gradmatchpb-warm_mnist.py",
+subset_config = "configs/config_gradmatchpb-warm_cifar100.py",
 
 # parameters for hyper-parameter tuning
 
@@ -12,9 +12,11 @@ subset_config = "configs/config_gradmatchpb-warm_mnist.py",
 space = dict(learning_rate=hp.uniform('lr', 0.001, 0.01), 
         optimizer= hp.choice('optimizer', ['sgd', 'adam']),
         trn_batch_size= hp.choice('trn_batch_size', [20, 32, 64]),
-        num_epochs=hp.uniform('num_epochs', 10, 50),
-        kernel1=hp.choice('kernel1', [1,3,5,7]),
-        kernel2=hp.choice('kernel2', [1,3,5,7])),
+        num_epochs=hp.uniform('num_epochs', 120, 300),
+        resnet50_1=hp.choice('resnet50_1', [2,3,4]),
+        resnet50_2=hp.choice('resnet50_2', [3,4,5]),
+        resnet50_3=hp.choice('resnet50_3', [5,6,7]),
+        resnet50_4=hp.choice('resnet50_4', [2,3,4])),
 
 
 # tuning algorithm 

@@ -73,6 +73,10 @@ class HyperParamTuning:
             config['model']['layers_3'] = int(new_config['resnet50_3'])
         if 'resnet50_4' in new_config:
             config['model']['layers_4'] = int(new_config['resnet50_4'])
+        if 'kernel1' in new_config:
+            config['model']['kernel1'] = int(new_config['kernel1'])
+        if 'kernel2' in new_config:
+            config['model']['kernel2'] = int(new_config['kernel2'])
 
         return config
         
