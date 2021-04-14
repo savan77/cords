@@ -16,7 +16,6 @@ config = dict(setting="supervisedlearning",
                     kernel1=3,
                     kernel2=3),
 
-
               loss=dict(type='CrossEntropyLoss',
                         use_sigmoid=False),
 
@@ -28,10 +27,9 @@ config = dict(setting="supervisedlearning",
               scheduler=dict(type="cosine_annealing",
                              T_max=300),
 
-              dss_strategy=dict(type="GradMatch",
+              dss_strategy=dict(type="Random-Online",
                                 fraction=0.1,
-                                select_every=20,
-                                lam=0.5),
+                                select_every=20),
 
               train_args=dict(num_epochs=15,
                               device="cuda",
