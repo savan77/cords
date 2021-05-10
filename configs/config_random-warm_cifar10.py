@@ -1,7 +1,7 @@
 # Learning setting
 config = dict(setting="supervisedlearning",
 
-              dataset=dict(name="cifar100",
+              dataset=dict(name="cifar10",
                            datadir="../data",
                            feature="dss",
                            type="pre-defined"),
@@ -10,9 +10,9 @@ config = dict(setting="supervisedlearning",
                               batch_size=20,
                               pin_memory=True),
 
-              model=dict(architecture='ResNet50',
+              model=dict(architecture='ResNet18',
                          type='pre-defined',
-                         numclasses=100),
+                         numclasses=10),
 
               loss=dict(type='CrossEntropyLoss',
                         use_sigmoid=False),
