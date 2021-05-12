@@ -85,7 +85,7 @@ class HyperParamTuning:
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--config_file", default="configs/config_hyper_param_tuning.py")    
+    argparser.add_argument("--config_file", default="configs/config_hyper_param_tuning_cifar100.py")    
     args = argparser.parse_args()
 
     hyperparam_tuning = HyperParamTuning(args.config_file) 
