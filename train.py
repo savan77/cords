@@ -45,8 +45,6 @@ class TrainClassifier:
 
         if self.configdata['model']['architecture'] == 'ResNet18':
             model = ResNet18(self.configdata['model']['numclasses'])
-        elif self.configdata['model']['architecture'] == 'MnistNet':
-            model = MnistNet()
         elif self.configdata['model']['architecture'] == 'ResNet164':
             model = ResNet164(self.configdata['model']['numclasses'])
         elif self.configdata['model']['architecture'] == 'ResNet50':
@@ -58,7 +56,7 @@ class TrainClassifier:
         elif self.configdata['model']['architecture'] == 'MobileNet2':
             model = MobileNet2(output_size=self.configdata['model']['numclasses'])
         elif self.configdata['model']['architecture'] == "MnistNet":
-            model = MnistNet(kernel1=self.configdata['model']['kernel1'], kernel2=self.configdata['model']['kernel2'])
+            model = MnistNet(kernel1=self.configdata['model']['kernel1'], feat_size1=self.configdata['model']['feat_size1'], kernel2=self.configdata['model']['kernel2'], feat_size2=self.configdata['model']['feat_size2'], drop1=self.configdata['model']['drop1'], drop2=self.configdata['model']['drop2'], fc_deep=self.configdata['model']['fc_deep'], fc_width=self.configdata['model']['fc_width'])
         model = model.to(self.configdata['train_args']['device'])
         return model
 

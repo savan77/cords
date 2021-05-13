@@ -4,15 +4,18 @@ import torch.nn.functional as F
 
 
 class MnistNet(nn.Module):
-    def __init__(self, kernel1=3, kernel2=3):
+    def __init__(self, kernel1=3, feat_size1 = 32, kernel2=3, feat_size2=64, drop1=0.25, drop2=0.5, fc_deep=1, fc_width=128):
         super(MnistNet, self).__init__()
         self.embDim = 128
         
-        self.conv1 = nn.Conv2d(1, 32, kernel1, 1)
-        self.conv2 = nn.Conv2d(32, 64, kernel2, 1)
-        self.dropout1 = nn.Dropout2d(0.25)
-        self.dropout2 = nn.Dropout2d(0.5)
-        self.fc1 = nn.Linear(9216, 128)
+        self.conv1 = nn.Conv2d(1, feat_size1, kernel1, 1)
+        self.conv2 = nn.Conv2d(32, feat_size2, kernel2, 1)
+        self.dropout1 = nn.Dropout2d(drop1)
+        self.dropout2 = nn.Dropout2d(drop2)
+        self.fc1 = []
+        for i in range(fc_deep):
+            self.fc1.append(nn.Linear(9216, fc_width))
+        self.fc1 = nn.Sequential(*self.fc1)
         self.fc2 = nn.Linear(128, 10)
 
 

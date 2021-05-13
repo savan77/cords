@@ -14,7 +14,13 @@ space = dict(learning_rate=hp.uniform('lr', 0.0005, 0.01),
         trn_batch_size= hp.choice('trn_batch_size', [64, 128, 256]),
         num_epochs=hp.choice('num_epochs', [6,7,8,9,10,11,12,13,14,15]),
         kernel1=hp.choice('kernel1', [1,3,5,7]),
-        kernel2=hp.choice('kernel2', [1,3,5,7])),
+        kernel2=hp.choice('kernel2', [1,3,5,7]),
+        feat_size1 = hp.choice('feat_size1', [10, 24, 32, 64]),
+        feat_size2=hp.choice('feat_size2', [24, 32, 64, 128]),
+        fc_deep=hp.choice('fc_deep', [1,2,3,4]),
+        fc_width=hp.choice('fc_width', [32, 64, 128, 200]),
+        drop1=hp.choice('drop1', [0.25, 0.35, 0.5, 0.7]),
+        drop2=hp.choice('drop2', [0.25, 0.35, 0.5, 0.7])),
 
 
 # tuning algorithm 

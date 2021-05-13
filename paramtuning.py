@@ -77,6 +77,18 @@ class HyperParamTuning:
             config['model']['kernel1'] = int(new_config['kernel1'])
         if 'kernel2' in new_config:
             config['model']['kernel2'] = int(new_config['kernel2'])
+        if 'feat_size1' in new_config:
+            config['model']['feat_size1'] = int(new_config['feat_size1'])
+        if 'feat_size2' in new_config:
+            config['model']['feat_size2'] = int(new_config['feat_size2'])
+        if 'fc_deep' in new_config:
+            config['model']['fc_deep'] = int(new_config['fc_deep'])
+        if 'fc_width' in new_config:
+            config['model']['fc_width'] = int(new_config['fc_width'])
+        if 'drop1' in new_config:
+            config['model']['drop1'] = int(new_config['drop1'])
+        if 'drop2' in new_config:
+            config['model']['drop2'] = int(new_config['drop2'])
 
         return config
         
