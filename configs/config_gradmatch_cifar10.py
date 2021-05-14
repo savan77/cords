@@ -1,20 +1,19 @@
 # Learning setting
 config = dict(setting="supervisedlearning",
 
-              dataset=dict(name="mnist",
+              dataset=dict(name="cifar10",
                            datadir="../data",
-                           feature="dss",
+                           feature="classimb",
+                           classimb_ratio=0.5,
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
-                              batch_size=256,
+                              batch_size=20,
                               pin_memory=True),
 
-              model = dict(architecture='MnistNet',
-                    type = 'pre-defined',
-                    numclasses = 10,
-                    kernel1=3,
-                    kernel2=3),
+              model=dict(architecture='ResNet18',
+                         type='pre-defined',
+                         numclasses=10),
 
 
               loss=dict(type='CrossEntropyLoss',
@@ -31,7 +30,8 @@ config = dict(setting="supervisedlearning",
               dss_strategy=dict(type="GradMatch",
                                 fraction=0.1,
                                 select_every=20,
-                                lam=0.5),
+                                lam=0.5,
+                                valid=True),
 
               train_args=dict(num_epochs=15,
                               device="cuda",

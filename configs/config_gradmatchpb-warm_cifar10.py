@@ -4,6 +4,7 @@ config = dict(setting="supervisedlearning",
               dataset=dict(name="cifar10",
                            datadir="../data",
                            feature="classimb",
+                           classimb_ratio=0.5,
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
