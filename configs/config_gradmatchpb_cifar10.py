@@ -3,7 +3,7 @@ config = dict(setting="supervisedlearning",
 
               dataset=dict(name="cifar10",
                            datadir="../data",
-                           feature="dss",
+                           feature="classimb",
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
@@ -28,7 +28,8 @@ config = dict(setting="supervisedlearning",
               dss_strategy=dict(type="GradMatchPB",
                                 fraction=0.1,
                                 select_every=20,
-                                lam=0),
+                                lam=0,
+                                valid=True),
 
               train_args=dict(num_epochs=300,
                               device="cuda",
