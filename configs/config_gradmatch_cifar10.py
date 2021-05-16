@@ -33,7 +33,7 @@ config = dict(setting="supervisedlearning",
                                 lam=0.5,
                                 valid=True),
 
-              train_args=dict(num_epochs=15,
+              train_args=dict(num_epochs=300,
                               device="cuda",
                               print_every=1,
                               results_dir='results/',
