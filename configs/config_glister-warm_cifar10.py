@@ -3,7 +3,8 @@ config = dict(setting="supervisedlearning",
 
               dataset=dict(name="cifar10",
                            datadir="../data",
-                           feature="dss",
+                           feature="classimb",
+                           classimb_ratio=0.5,
                            type="pre-defined"),
 
               dataloader=dict(shuffle=True,
@@ -32,9 +33,9 @@ config = dict(setting="supervisedlearning",
 
               train_args=dict(num_epochs=300,
                               device="cuda",
-                              print_every=10,
+                              print_every=1,
                               results_dir='results/',
-                              print_args=["val_loss", "val_acc", "tst_loss", "tst_acc", "time"],
+                              print_args=["val_loss", "val_acc"],
                               return_args=[]
                               )
               )
