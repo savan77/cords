@@ -11,11 +11,17 @@ dataloader=dict(shuffle=True,
             pin_memory=True),
 
 model = dict(architecture='MnistNet',
-                type = 'pre-defined',
-                numclasses = 10,
-                kernel1=3,
-                kernel2=3),
-
+             type = 'pre-defined',
+             numclasses = 10,
+             kernel1=3,
+             feat_size1=32,
+             kernel2=3,
+             feat_size2=64,
+             drop1=0.25,
+             drop2=0.5,
+             fc_deep=1,
+             fc_width=128),
+             
 loss=dict(type='CrossEntropyLoss',
         use_sigmoid=False),
 
