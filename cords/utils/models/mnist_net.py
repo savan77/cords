@@ -14,7 +14,7 @@ class MnistNet(nn.Module):
         self.dropout1 = nn.Dropout2d(drop1)
         self.dropout2 = nn.Dropout2d(drop2)
         size = self.get_flat_fts((1,28,28), nn.Sequential(self.conv1, self.conv2))
-        size = (size // 4) * batch_size
+        size = (size // 4)
         print("sze****",size)
         self.fc1 = []
         for i in range(fc_deep):
